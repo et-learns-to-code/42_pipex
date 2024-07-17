@@ -6,7 +6,7 @@
 /*   By: etien <etien@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 13:05:12 by etien             #+#    #+#             */
-/*   Updated: 2024/07/17 15:56:26 by etien            ###   ########.fr       */
+/*   Updated: 2024/07/17 18:32:32 by etien            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@
 # include <unistd.h>
 
 void error(char *message);
-void execute(char **av, char **env);
+void exec_cmd(char **av, char **env);
+char *fetch_path(char *cmd, char **env);
 
 #endif

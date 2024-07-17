@@ -6,7 +6,7 @@
 /*   By: etien <etien@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 13:23:28 by etien             #+#    #+#             */
-/*   Updated: 2024/07/17 15:53:34 by etien            ###   ########.fr       */
+/*   Updated: 2024/07/17 18:37:07 by etien            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,12 +23,12 @@ int	main(int ac, char **av, char **env)
 	pid_t	pid;
 
 	if (ac != 5)
-		error("Correct usage: ./pipex file1 cmd1 cmd2 file2");
+		err_and_exit("Correct usage: ./pipex file1 cmd1 cmd2 file2");
 	if (pipe(pipefd) == -1)
-		error("A pipe error occurred.");
+		err_and_exit("A pipe error occurred.");
 	pid = fork();
 	if (pid == -1)
-		error("A fork error occurred.");
+		err_and_exit("A fork error occurred.");
 	else if (pid == 0)
 		child_process(av, env, pipefd);
 	else
@@ -50,16 +50,13 @@ void	parent_process(char **av, char **env, int *pipefd)
 
 	outfile = open(av[4], O_WRONLY | O_CREAT | O_TRUNC, 0777);
 	if (outfile == -1)
-	{
-		perror("Failed to open outfile.");
-		exit(EXIT_FAILURE);
-	}
+		err_and_exit("Failed to open outfile.");
 	close(pipefd[1]);
 	dup2(pipefd[0], STDIN_FILENO);
 	close(pipefd[0]);
 	dup2(outfile, STDOUT_FILENO);
 	close (outfile);
-	execute(av[3], env);
+	exec_cmd(av[3], env);
 }
 
 // INPUT: infile
@@ -70,16 +67,13 @@ void	child_process(char **av, char **env, int *pipefd)
 
 	infile = open(av[1], O_RDONLY, 0777);
 	if (infile == -1)
-	{
-		perror("Failed to open infile.");
-		exit(EXIT_FAILURE);
-	}
+		err_and_exit("Failed to open infile.");
 	close(pipefd[0]);
 	dup2(infile, STDIN_FILENO);
 	close(infile);
 	dup2(pipefd[1], STDOUT_FILENO);
 	close(pipefd[1]);
-	execute(av[2], env);
+	exec_cmd(av[2], env);
 }
 
 /*
