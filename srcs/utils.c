@@ -1,30 +1,37 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pipex.h                                            :+:      :+:    :+:   */
+/*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: etien <etien@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/07/16 13:05:12 by etien             #+#    #+#             */
-/*   Updated: 2024/07/17 15:56:26 by etien            ###   ########.fr       */
+/*   Created: 2024/07/17 15:48:09 by etien             #+#    #+#             */
+/*   Updated: 2024/07/17 16:06:38 by etien            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-// fcntl.h - open
-// stdio.h - perror
-// sys/types.h - pid_t data type
+#include "../includes/pipex.h"
 
-#ifndef PIPEX_H
-# define PIPEX_H
+void	error(char *message)
+{
+	perror(message);
+	exit(EXIT_FAILURE);
+}
 
-# include "../libft/libft.h"
-# include <fcntl.h>
-# include <stdio.h>
-# include <sys/types.h>
-# include <sys/wait.h>
-# include <unistd.h>
+void	execute(char **av, char **env)
+{
+	char	*path;
+	char	**args;
 
-void error(char *message);
-void execute(char **av, char **env);
+	if execve(path, args, env);
 
-#endif
+
+
+
+
+}
+
+char *fetch_path(char **av, char **env)
+{
+
+}
