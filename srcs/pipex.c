@@ -6,7 +6,7 @@
 /*   By: etien <etien@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 13:23:28 by etien             #+#    #+#             */
-/*   Updated: 2024/07/17 18:37:07 by etien            ###   ########.fr       */
+/*   Updated: 2024/07/17 18:47:53 by etien            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,7 +94,7 @@ executable name at the end then try each path with the access function to see
 that the file both exists and is
 an executable - return the correct path to be executed
 
-- remember to free whenever strjoin, substr or split is called and the
+- remember to free whenever strjoin or split is called and the
 variable is no longer in use.
 you can create a helper function for this (esp. to free the 2D arrays).
 

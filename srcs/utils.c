@@ -6,7 +6,7 @@
 /*   By: etien <etien@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/17 15:48:09 by etien             #+#    #+#             */
-/*   Updated: 2024/07/17 18:39:58 by etien            ###   ########.fr       */
+/*   Updated: 2024/07/17 18:43:47 by etien            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,6 @@ void	err_and_exit(char *message)
 	exit(EXIT_FAILURE);
 }
 
-// F_OK | X_OK is a bitwise operation that checks that the file both
-// exists and is executable.
 void	exec_cmd(char *cmd, char **env)
 {
 	char	*path;
@@ -34,6 +32,8 @@ void	exec_cmd(char *cmd, char **env)
 	}
 }
 
+// F_OK | X_OK is a bitwise operation that checks that the file both
+// exists and is executable.
 char *fetch_path(char *cmd, char **env)
 {
 	int i;
