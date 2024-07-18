@@ -28,19 +28,19 @@ RM = rm -f
 all: $(NAME)
 
 $(NAME): $(OBJ)
-	$(AR) $(NAME) $(OBJ)
+	@$(AR) $(NAME) $(OBJ)
 
 bonus: $(OBJB)
-	$(AR) $(NAME) $(OBJB)
+	@$(AR) $(NAME) $(OBJB)
 
 %.o: %.c
-	$(CC) $(CFLAGS) -c $< -o $@
+	@$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
-	$(RM) $(OBJ) $(OBJB)
+	@$(RM) $(OBJ) $(OBJB)
 
 fclean: clean
-	$(RM) $(NAME)
+	@$(RM) $(NAME)
 
 re: fclean all
 

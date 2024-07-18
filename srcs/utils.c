@@ -6,7 +6,7 @@
 /*   By: etien <etien@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/17 15:48:09 by etien             #+#    #+#             */
-/*   Updated: 2024/07/18 14:23:37 by etien            ###   ########.fr       */
+/*   Updated: 2024/07/18 15:19:26 by etien            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 void	err_and_exit(char *message)
 {
-	perror(message);
+	ft_putendl_fd(message, 2);
 	exit(EXIT_FAILURE);
 }
 
@@ -31,7 +31,7 @@ void	exec_cmd(char *cmd, char **env)
 	if (!path)
 	{
 		free_double_arr(args);
-		err_and_exit("Path to command not found.");
+		err_and_exit("Command not found.");
 	}
 	if ((execve(path, args, env)) == -1)
 		err_and_exit("Failed to execute command.");
