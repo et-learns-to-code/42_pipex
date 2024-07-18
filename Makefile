@@ -10,6 +10,7 @@ OBJS_B = ${SRCS_B:.c=.o}
 HEADER = -Iincludes
 
 LIBFT_DIR = libft/
+LIBFT = $(LIBFT_DIR)libft.a
 
 CC = gcc
 CFLAGS = -Wall -Wextra -Werror
@@ -19,15 +20,16 @@ CFLAGS = -Wall -Wextra -Werror
 
 all: $(NAME)
 
-$(NAME): $(OBJS)
-	make re -C $(LIBFT_DIR)
-	$(CC) $(OBJS) -Llibft -lft -o $(NAME)
+$(NAME): $(OBJS) $(LIBFT)
+	$(CC) $(OBJS) -L$(LIBFT_DIR) -lft -o $(NAME)
 
 bonus: $(NAME_B)
 
-$(NAME_B): $(OBJS_B)
-	make re -C $(LIBFT_DIR)
-	$(CC) $(OBJS_B) -Llibft -lft -o $(NAME_B)
+$(NAME_B): $(OBJS_B) $(LIBFT)
+	$(CC) $(OBJS_B) -L$(LIBFT_DIR) -lft -o $(NAME_B)
+
+$(LIBFT): FORCE
+	make -C	$(LIBFT_DIR)
 
 clean:
 	make clean -C $(LIBFT_DIR)
@@ -40,5 +42,7 @@ fclean: clean
 re: fclean all
 
 re_bonus: fclean bonus
+
+FORCE:
 
 .PHONY: all bonus clean fclean re re_bonus

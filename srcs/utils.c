@@ -6,7 +6,7 @@
 /*   By: etien <etien@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/17 15:48:09 by etien             #+#    #+#             */
-/*   Updated: 2024/07/18 11:19:53 by etien            ###   ########.fr       */
+/*   Updated: 2024/07/18 14:23:37 by etien            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,19 +18,23 @@ void	err_and_exit(char *message)
 	exit(EXIT_FAILURE);
 }
 
-// TODO: extract args
+// path doesn't have to be freed after execve is called
+// because the process image will be replaced by the new
+// program.
 void	exec_cmd(char *cmd, char **env)
 {
 	char	*path;
 	char	**args;
 
-	path = fetch_path(cmd, env);
+	args = ft_split(cmd, ' ');
+	path = fetch_path(args[0], env);
 	if (!path)
-		err_and_exit("Path to command not found.");
-	if ((execve(path, args, env)) == -1)
 	{
-		err_and_exit("Failed to execute command.");
+		free_double_arr(args);
+		err_and_exit("Path to command not found.");
 	}
+	if ((execve(path, args, env)) == -1)
+		err_and_exit("Failed to execute command.");
 }
 
 // F_OK | X_OK is a bitwise operation that checks that the file both
