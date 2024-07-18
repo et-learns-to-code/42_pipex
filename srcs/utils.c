@@ -6,7 +6,7 @@
 /*   By: etien <etien@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/17 15:48:09 by etien             #+#    #+#             */
-/*   Updated: 2024/07/17 18:43:47 by etien            ###   ########.fr       */
+/*   Updated: 2024/07/18 11:19:53 by etien            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@ void	err_and_exit(char *message)
 	exit(EXIT_FAILURE);
 }
 
+// TODO: extract args
 void	exec_cmd(char *cmd, char **env)
 {
 	char	*path;
@@ -34,30 +35,40 @@ void	exec_cmd(char *cmd, char **env)
 
 // F_OK | X_OK is a bitwise operation that checks that the file both
 // exists and is executable.
-char *fetch_path(char *cmd, char **env)
+char	*fetch_path(char *cmd, char **env)
 {
-	int i;
-	int j;
-	char **paths;
-	char *append_cmd;
-	char *path;
+	int		i;
+	char	**paths;
+	char	*append_cmd;
+	char	*path;
 
-	append_cmd = ft_strjoin("/", cmd);
 	i = 0;
-	while (env[i])
-	{
-		if (ft_strncmp(env[i], "PATH=", 5) == 0)
-		{
-			paths = ft_split(env[i] + 5, ':');
-			j = -1;
-			while (paths[++j])
-			{
-				path = ft_strjoin(paths[j], append_cmd);
-				if (access(path, F_OK | X_OK))
-					return (path);
-			}
-		}
+	while (ft_strncmp(env[i], "PATH=", 5) != 0)
 		i++;
+	if (!env[i])
+		return (NULL);
+	paths = ft_split(env[i] + 5, ':');
+	append_cmd = ft_strjoin("/", cmd);
+	i = -1;
+	while (paths[++i])
+	{
+		path = ft_strjoin(paths[i], append_cmd);
+		if (access(path, F_OK | X_OK) == 0)
+			break ;
+		free(path);
+		path = NULL;
 	}
-	return (NULL);
+	free_double_arr(paths);
+	free(append_cmd);
+	return (path);
+}
+
+void	free_double_arr(char **arr)
+{
+	int	i;
+
+	i = -1;
+	while (arr[++i])
+		free(arr[i]);
+	free(arr);
 }
