@@ -1,10 +1,10 @@
 NAME = pipex
 NAME_B = pipex_bonus
 
-SRCS = srcs/pipex.c srcs/utils.c
+SRCS = mandatory/pipex.c mandatory/utils.c
 OBJS = ${SRCS:.c=.o}
 
-SRCS_B = srcs/pipex_bonus.c srcs/utils_bonus.c
+SRCS_B = bonus/pipex_bonus.c bonus/utils_bonus.c bonus/utils_extra_bonus.c
 OBJS_B = ${SRCS_B:.c=.o}
 
 HEADER = -Iincludes
