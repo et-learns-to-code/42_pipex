@@ -6,7 +6,7 @@
 /*   By: etien <etien@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 13:23:28 by etien             #+#    #+#             */
-/*   Updated: 2024/07/18 15:47:50 by etien            ###   ########.fr       */
+/*   Updated: 2024/07/19 10:13:03 by etien            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,8 +33,8 @@ int	main(int ac, char **av, char **env)
 		child_process(av, env, pipefd);
 	else
 	{
-		wait(NULL);
 		parent_process(av, env, pipefd);
+		wait(NULL);
 	}
 	return (EXIT_SUCCESS);
 }

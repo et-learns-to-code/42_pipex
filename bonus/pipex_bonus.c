@@ -6,94 +6,77 @@
 /*   By: etien <etien@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 13:23:28 by etien             #+#    #+#             */
-/*   Updated: 2024/07/18 17:50:29 by etien            ###   ########.fr       */
+/*   Updated: 2024/07/19 12:55:02 by etien            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/pipex_bonus.h"
 
-void	parent_process(char **av, char **env, int *pipefd);
-void	child_process(char **av, char **env, int *pipefd);
+void	create_child_process(char *cmd, char **env);
 
-// pid_t is a data type available under the <sys/types.h> library specifically
-// used to store process ids.
-// int		pipefd[2];
-// pid_t	pid;
-
-// if (ac != 5)
-// 	err_and_exit("Correct usage: ./pipex file1 cmd1 cmd2 file2");
-// if (pipe(pipefd) == -1)
-// 	err_and_exit("A pipe error occurred.");
-// pid = fork();
-// if (pid == -1)
-// 	err_and_exit("A fork error occurred.");
-// else if (pid == 0)
-// 	child_process(av, env, pipefd);
-// else
-// {
-// 	wait(NULL);
-// 	parent_process(av, env, pipefd);
-// }
+// cmd_index variable is used to mark the command to be created in
+// the child process.
+// The main function is different from the mandatory part by inclusion
+// of a while loop that will create a child process for each command in
+// the pipe chain.
 int	main(int ac, char **av, char **env)
 {
-	int infile;
-	int outfile;
+	int	cmd_index;
+	int	infile;
+	int	outfile;
 
-	(void) env;
 	if (ac < 5)
 		err_and_exit("Correct usage: \n"
 			"1) ./pipex file1 cmd1 cmd2 cmd3 ... cmdn file2 \n"
 			"2) ./pipex here_doc LIMITER cmd cmd1 file");
 	if (ft_strncmp(av[1], "here_doc", 8) == 0)
 	{
-		outfile = open_file(av[ac - 1], HERE_DOC);
-
+		cmd_index = 3;
+		outfile = open_file(av[ac - 1], OUT_FILE_APPEND);
 	}
 	else
 	{
-		infile = open_file(av[ac - 1], IN_FILE);
+		cmd_index = 2;
+		infile = open_file(av[1], IN_FILE);
 		outfile = open_file(av[ac - 1], OUT_FILE);
+		dup2(infile, STDIN_FILENO);
+		close(infile);
 	}
+	while (cmd_index < ac - 2)
+		create_child_proces(av[cmd_index++], env);
+	dup2(outfile, STDOUT_FILENO);
+	close(outfile);
+	exec_cmd(av[ac - 2], env);
 	return (EXIT_SUCCESS);
 }
 
-// INPUT: read end of pipe
-// OUTPUT: outfile
-// O_CREAT will create the file if it does not exist
-// O_TRUNC will clear the file contents if it exists
-// 0777 just means opening or creating the file with full permissions
-void	parent_process(char **av, char **env, int *pipefd)
+void	create_child_process(char *cmd, char **env)
 {
-	int	outfile;
+	int		pipefd[2];
+	pid_t	pid;
 
-	outfile = open(av[4], O_WRONLY | O_CREAT | O_TRUNC, 0777);
-	if (outfile == -1)
-		err_and_exit("Failed to open outfile.");
-	close(pipefd[1]);
-	dup2(pipefd[0], STDIN_FILENO);
-	close(pipefd[0]);
-	dup2(outfile, STDOUT_FILENO);
-	close (outfile);
-	exec_cmd(av[3], env);
+	if (pipe(pipefd) == -1)
+		err_and_exit("A pipe error occurred.");
+	pid = fork();
+	if (pid == -1)
+		err_and_exit("A fork error occurred.");
+	else if (pid == 0)
+	{
+		close(pipefd[0]);
+		dup2(pipefd[1], STDOUT_FILENO);
+		close(pipefd[1]);
+		exec_cmd(cmd, env);
+	}
+	else
+	{
+		close(pipefd[1]);
+		dup2(pipefd[0], STDIN_FILENO);
+		close(pipefd[0]);
+		wait(NULL);
+	}
 }
 
-// INPUT: infile
-// OUTPUT: write end of pipe
-void	child_process(char **av, char **env, int *pipefd)
-{
-	int	infile;
-
-	infile = open(av[1], O_RDONLY, 0777);
-	if (infile == -1)
-		err_and_exit("Failed to open infile.");
-	close(pipefd[0]);
-	dup2(infile, STDIN_FILENO);
-	close(infile);
-	dup2(pipefd[1], STDOUT_FILENO);
-	close(pipefd[1]);
-	exec_cmd(av[2], env);
-}
-
+void here_doc()
 /*
 // WHAT TO DO
 - have a parent and child function, they will execute and be replaced by the

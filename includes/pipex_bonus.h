@@ -6,7 +6,7 @@
 /*   By: etien <etien@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 13:05:12 by etien             #+#    #+#             */
-/*   Updated: 2024/07/18 18:09:48 by etien            ###   ########.fr       */
+/*   Updated: 2024/07/19 11:06:32 by etien            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@
 
 # define IN_FILE 0
 # define OUT_FILE 1
-# define HERE_DOC 2
+# define OUT_FILE_APPEND 2
 
 // Util functions for mandatory part
 void	err_and_exit(char *message);
@@ -37,6 +37,6 @@ char	*fetch_path(char *cmd, char **env);
 void	free_double_arr(char **arr);
 
 // Util functions for bonus part
-int	open_file(char *file, int open_mode);
+int		open_file(char *file, int open_mode);
 
 #endif

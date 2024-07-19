@@ -6,7 +6,7 @@
 /*   By: etien <etien@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/17 15:48:09 by etien             #+#    #+#             */
-/*   Updated: 2024/07/18 16:36:27 by etien            ###   ########.fr       */
+/*   Updated: 2024/07/19 10:50:00 by etien            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,9 +18,9 @@ void	err_and_exit(char *message)
 	exit(EXIT_FAILURE);
 }
 
-// path doesn't have to be freed after execve is called
+// path and args don't have to be freed after execve is called
 // because the process image will be replaced by the new
-// program.
+// program and previous memory will be deallocated by the system.
 void	exec_cmd(char *cmd, char **env)
 {
 	char	*path;
