@@ -6,13 +6,14 @@
 /*   By: etien <etien@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 13:23:28 by etien             #+#    #+#             */
-/*   Updated: 2024/07/19 12:55:02 by etien            ###   ########.fr       */
+/*   Updated: 2024/07/19 14:09:42 by etien            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/pipex_bonus.h"
 
 void	create_child_process(char *cmd, char **env);
+void	here_doc(int ac, char *limiter);
 
 // cmd_index variable is used to mark the command to be created in
 // the child process.
@@ -26,13 +27,12 @@ int	main(int ac, char **av, char **env)
 	int	outfile;
 
 	if (ac < 5)
-		err_and_exit("Correct usage: \n"
-			"1) ./pipex file1 cmd1 cmd2 cmd3 ... cmdn file2 \n"
-			"2) ./pipex here_doc LIMITER cmd cmd1 file");
+		incorrect_args();
 	if (ft_strncmp(av[1], "here_doc", 8) == 0)
 	{
 		cmd_index = 3;
 		outfile = open_file(av[ac - 1], OUT_FILE_APPEND);
+		here_doc(ac, av[2]);
 	}
 	else
 	{
@@ -43,7 +43,7 @@ int	main(int ac, char **av, char **env)
 		close(infile);
 	}
 	while (cmd_index < ac - 2)
-		create_child_proces(av[cmd_index++], env);
+		create_child_process(av[cmd_index++], env);
 	dup2(outfile, STDOUT_FILENO);
 	close(outfile);
 	exec_cmd(av[ac - 2], env);
@@ -76,7 +76,46 @@ void	create_child_process(char *cmd, char **env)
 	}
 }
 
-void here_doc()
+// write here will keep appending to pipe until limiter string
+// is encountered
+void	here_doc(int ac, char *limiter)
+{
+	int		pipefd[2];
+	pid_t	pid;
+	char	*line;
+
+	if (ac < 6)
+		incorrect_args();
+	if (pipe(pipefd) == -1)
+		err_and_exit("A pipe error occurred.");
+	pid = fork();
+	if (pid == -1)
+		err_and_exit("A fork error occurred.");
+	else if (pid == 0)
+	{
+		close(pipefd[0]);
+		while (extract_line(&line) > 0)
+		{
+			if (ft_strncmp(line, limiter, ft_strlen(limiter)) == 0)
+			{
+				free(line);
+				break ;
+			}
+			write(pipefd[1], line, ft_strlen(line + 1));
+			free(line);
+		}
+		close(pipefd[1]);
+		exit(EXIT_SUCCESS);
+	}
+	else
+	{
+		close(pipefd[1]);
+		dup2(pipefd[0], STDIN_FILENO);
+		close(pipefd[0]);
+		wait(NULL);
+	}
+}
+
 /*
 // WHAT TO DO
 - have a parent and child function, they will execute and be replaced by the

@@ -6,11 +6,18 @@
 /*   By: etien <etien@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/17 15:48:09 by etien             #+#    #+#             */
-/*   Updated: 2024/07/19 11:31:45 by etien            ###   ########.fr       */
+/*   Updated: 2024/07/19 14:09:32 by etien            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/pipex_bonus.h"
+
+void	incorrect_args(void)
+{
+	err_and_exit("Correct usage: \n"
+		"1) ./pipex file1 cmd1 cmd2 cmd3 ... cmdn file2 \n"
+		"2) ./pipex here_doc LIMITER cmd cmd1 file");
+}
 
 // >> in here_doc command means appending to text file
 // so O_APPEND is used for here_doc
@@ -31,13 +38,30 @@ int	open_file(char *file, int open_mode)
 
 // this function will read input from stdin character by character
 // into a buffer until a newline character is encountered,
-// then the line pointer will be moved to the buffer to update
-// the line into the here_doc function
-void extract_line(char **line)
+// then the line pointer will point to buffer to update
+// line in here_doc function
+int	extract_line(char **line)
 {
+	char	*buffer;
+	char	c;
+	int		i;
+	int		bytes_read;
 
-
-
-
-
+	buffer = malloc(256 * sizeof(char));
+	if (!buffer)
+		return (-1);
+	bytes_read = read(0, &c, 1);
+	i = 0;
+	while (bytes_read > 0 && c != '\n')
+	{
+		buffer[i] = c;
+		bytes_read = read(0, &c, 1);
+		i++;
+		if (c == '\n')
+			break ;
+	}
+	buffer[i++] = '\n';
+	buffer[i] = '\0';
+	*line = buffer;
+	return (bytes_read);
 }
