@@ -6,52 +6,109 @@
 /*   By: etien <etien@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 13:23:28 by etien             #+#    #+#             */
-/*   Updated: 2024/07/20 14:02:36 by etien            ###   ########.fr       */
+/*   Updated: 2024/07/20 15:12:20 by etien            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/pipex_bonus.h"
 
-void	create_child_process(char *cmd, char **env);
+void	handle_files(int ac, char **av, int *cmd_index, int *outfile);
 void	here_doc(int ac, char *limiter);
+void	here_doc_input(int pipefd[2], char *limiter);
+void	create_child_process(char *cmd, char **env);
 
 // cmd_index variable is used to mark the command to be created in
 // the child process.
 // The bonus part program is different from the mandatory part by inclusion
 // of a while loop that will create a child process for each command
 // (except the last one) in the pipe chain.
-// 1st if: checks for incorrect arguments
-// 2nd if: handles processing with here_doc
-//	   else: handles normal processing with an infile
 // After while loop, final command is executed.
 int	main(int ac, char **av, char **env)
 {
 	int	cmd_index;
-	int	infile;
 	int	outfile;
 
 	if (ac < 5)
 		incorrect_args();
-	if (ft_strncmp(av[1], "here_doc", 8) == 0)
-	{
-		cmd_index = 3;
-		outfile = open_file(av[ac - 1], OUT_FILE_APPEND);
-		here_doc(ac, av[2]);
-	}
-	else
-	{
-		cmd_index = 2;
-		infile = open_file(av[1], IN_FILE);
-		outfile = open_file(av[ac - 1], OUT_FILE);
-		dup2(infile, STDIN_FILENO);
-		close(infile);
-	}
+	handle_files(ac, av, &cmd_index, &outfile);
 	while (cmd_index < ac - 2)
 		create_child_process(av[cmd_index++], env);
 	dup2(outfile, STDOUT_FILENO);
 	close(outfile);
 	exec_cmd(av[ac - 2], env);
 	return (EXIT_SUCCESS);
+}
+
+// This function handles the opening of files.
+// if: handles processing with here_doc
+// else: handles normal processing with an infile
+void	handle_files(int ac, char **av, int *cmd_index, int *outfile)
+{
+	int	infile;
+
+	if (ft_strncmp(av[1], "here_doc", 8) == 0)
+	{
+		*cmd_index = 3;
+		*outfile = open_file(av[ac - 1], OUT_FILE_APPEND);
+		here_doc(ac, av[2]);
+	}
+	else
+	{
+		*cmd_index = 2;
+		infile = open_file(av[1], IN_FILE);
+		*outfile = open_file(av[ac - 1], OUT_FILE);
+		dup2(infile, STDIN_FILENO);
+		close(infile);
+	}
+}
+
+// This function handles the processing for here_doc.
+// Pipe and fork are used to accumulate all lines from the
+// here_doc in the child process first before passing it in one go to
+// the parent process.
+void	here_doc(int ac, char *limiter)
+{
+	int		pipefd[2];
+	pid_t	pid;
+
+	if (ac < 6)
+		incorrect_args();
+	if (pipe(pipefd) == -1)
+		err_and_exit("A pipe error occurred.");
+	pid = fork();
+	if (pid == -1)
+		err_and_exit("A fork error occurred.");
+	else if (pid == 0)
+		here_doc_input(pipefd, limiter);
+	else
+	{
+		close(pipefd[1]);
+		dup2(pipefd[0], STDIN_FILENO);
+		close(pipefd[0]);
+		wait(NULL);
+	}
+}
+
+// Helper function to here_doc that runs its child process
+// of collecting input from stdout.
+// extract_line function will fetch the next line and the line will be
+// appended via write function to the pipe's write end until the limiter
+// string is encountered.
+void	here_doc_input(int pipefd[2], char *limiter)
+{
+	char	*line;
+
+	close(pipefd[0]);
+	while (extract_line(&line) > 0)
+	{
+		if (ft_strncmp(line, limiter, ft_strlen(limiter)) == 0)
+			break ;
+		write(pipefd[1], line, ft_strlen(line));
+		free(line);
+	}
+	free(line);
+	close(pipefd[1]);
+	exit(EXIT_SUCCESS);
 }
 
 // This function creates a pipe then forks the process.
@@ -74,49 +131,6 @@ void	create_child_process(char *cmd, char **env)
 		dup2(pipefd[1], STDOUT_FILENO);
 		close(pipefd[1]);
 		exec_cmd(cmd, env);
-	}
-	else
-	{
-		close(pipefd[1]);
-		dup2(pipefd[0], STDIN_FILENO);
-		close(pipefd[0]);
-		wait(NULL);
-	}
-}
-
-// This function handles the processing for here_doc.
-// extract_line function will fetch the next line and the line will be
-// appended via write function to the pipe's write end until the limiter string
-// is encountered. Pipe and fork are used to accumulate all lines in the
-// here_doc in the child process first before passing it in one go to
-// the parent process.
-void	here_doc(int ac, char *limiter)
-{
-	int		pipefd[2];
-	pid_t	pid;
-	char	*line;
-
-	if (ac < 6)
-		incorrect_args();
-	if (pipe(pipefd) == -1)
-		err_and_exit("A pipe error occurred.");
-	pid = fork();
-	if (pid == -1)
-		err_and_exit("A fork error occurred.");
-	else if (pid == 0)
-	{
-		close(pipefd[0]);
-		while (extract_line(&line) > 0)
-		{
-			if (ft_strncmp(line, limiter, ft_strlen(limiter)) == 0)
-			{
-				free(line);
-				break ;
-			}
-			write(pipefd[1], line, ft_strlen(line));
-			free(line);
-		}
-		close(pipefd[1]);
 	}
 	else
 	{

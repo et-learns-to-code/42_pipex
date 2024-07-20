@@ -6,7 +6,7 @@
 /*   By: etien <etien@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/17 15:48:09 by etien             #+#    #+#             */
-/*   Updated: 2024/07/20 11:51:07 by etien            ###   ########.fr       */
+/*   Updated: 2024/07/20 15:05:21 by etien            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ int	open_file(char *file, int open_mode)
 	return (fd);
 }
 
-// This function will read input from stdin character by character
+// This function will read input from stdout character by character
 // into a buffer until a newline character is encountered,
 // then the line pointer passed in as an argument will point to
 // buffer to update line in the here_doc function.
