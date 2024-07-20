@@ -6,7 +6,7 @@
 /*   By: etien <etien@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/17 15:48:09 by etien             #+#    #+#             */
-/*   Updated: 2024/07/20 15:05:21 by etien            ###   ########.fr       */
+/*   Updated: 2024/07/20 16:00:26 by etien            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,8 @@
 void	incorrect_args(void)
 {
 	err_and_exit("Correct usage: \n"
-		"1) ./pipex_bonus file1 cmd1 cmd2 cmd3 ... cmdn file2 \n"
-		"2) ./pipex_bonus here_doc LIMITER cmd cmd1 file");
+		"1) ./pipex file1 cmd1 cmd2 cmd3 ... cmdn file2 \n"
+		"2) ./pipex here_doc LIMITER cmd cmd1 file");
 }
 
 // >> in here_doc usage means appending to text file

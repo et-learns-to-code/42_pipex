@@ -1,5 +1,4 @@
 NAME = pipex
-NAME_B = pipex_bonus
 
 SRCS = mandatory/pipex.c mandatory/utils.c
 OBJS = ${SRCS:.c=.o}
@@ -12,7 +11,7 @@ HEADER = -Iincludes
 LIBFT_DIR = libft/
 LIBFT = $(LIBFT_DIR)libft.a
 
-CC = gcc
+CC = cc
 CFLAGS = -Wall -Wextra -Werror
 
 %.o: %.c
@@ -23,10 +22,8 @@ all: $(NAME)
 $(NAME): $(OBJS) $(LIBFT)
 	$(CC) $(OBJS) -L$(LIBFT_DIR) -lft -o $(NAME)
 
-bonus: $(NAME_B)
-
-$(NAME_B): $(OBJS_B) $(LIBFT)
-	$(CC) $(OBJS_B) -L$(LIBFT_DIR) -lft -o $(NAME_B)
+bonus: $(OBJS_B) $(LIBFT)
+	$(CC) $(OBJS_B) -L$(LIBFT_DIR) -lft -o $(NAME)
 
 $(LIBFT): FORCE
 	make -C	$(LIBFT_DIR)
