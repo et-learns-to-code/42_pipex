@@ -6,7 +6,7 @@
 /*   By: etien <etien@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/17 15:48:09 by etien             #+#    #+#             */
-/*   Updated: 2024/07/19 14:09:32 by etien            ###   ########.fr       */
+/*   Updated: 2024/07/20 10:56:14 by etien            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@ int	open_file(char *file, int open_mode)
 {
 	int	fd;
 
+	fd = 0;
 	if (open_mode == IN_FILE)
 		fd = open(file, O_RDONLY, 0777);
 	else if (open_mode == OUT_FILE)
@@ -47,21 +48,17 @@ int	extract_line(char **line)
 	int		i;
 	int		bytes_read;
 
-	buffer = malloc(256 * sizeof(char));
+	buffer = ft_calloc(256, sizeof(char));
 	if (!buffer)
 		return (-1);
-	bytes_read = read(0, &c, 1);
 	i = 0;
-	while (bytes_read > 0 && c != '\n')
+	while (((bytes_read = read(0, &c, 1)) > 0))
 	{
 		buffer[i] = c;
-		bytes_read = read(0, &c, 1);
 		i++;
 		if (c == '\n')
-			break ;
+			break;
 	}
-	buffer[i++] = '\n';
-	buffer[i] = '\0';
 	*line = buffer;
 	return (bytes_read);
 }

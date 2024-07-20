@@ -6,7 +6,7 @@
 /*   By: etien <etien@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 13:23:28 by etien             #+#    #+#             */
-/*   Updated: 2024/07/19 14:09:42 by etien            ###   ########.fr       */
+/*   Updated: 2024/07/20 10:57:02 by etien            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,7 +101,7 @@ void	here_doc(int ac, char *limiter)
 				free(line);
 				break ;
 			}
-			write(pipefd[1], line, ft_strlen(line + 1));
+			write(pipefd[1], line, ft_strlen(line));
 			free(line);
 		}
 		close(pipefd[1]);
