@@ -6,7 +6,7 @@
 /*   By: etien <etien@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 13:23:28 by etien             #+#    #+#             */
-/*   Updated: 2024/07/20 12:06:32 by etien            ###   ########.fr       */
+/*   Updated: 2024/07/20 13:36:55 by etien            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,9 +15,11 @@
 void	parent_process(char **av, char **env, int *pipefd);
 void	child_process(char **av, char **env, int *pipefd);
 
-// pid_t is a data type available under the <sys/types.h> library specifically
-// used to store process ids.
-// fork accepts an int arr[2]: 0 is the read end and 1 is the write end
+// pid_t is a data type specifically used to store process ids.
+// child pid will typically be 0, pid is -1 if error occurs.
+// fork accepts an int arr[2]: 0 is the read end and 1 is the write end.
+// The program will execute a command each in parent and child processes
+// respectively. The parent will wait for the child process to terminate.
 int	main(int ac, char **av, char **env)
 {
 	int		pipefd[2];
@@ -40,7 +42,7 @@ int	main(int ac, char **av, char **env)
 	return (EXIT_SUCCESS);
 }
 
-// INPUT: read end of pipe
+// INPUT: read end of pipe (pipefd[0])
 // OUTPUT: outfile
 // O_CREAT will create the file if it does not exist
 // O_TRUNC will clear the file contents if it exists
@@ -61,7 +63,7 @@ void	parent_process(char **av, char **env, int *pipefd)
 }
 
 // INPUT: infile
-// OUTPUT: write end of pipe
+// OUTPUT: write end of pipe (pipefd[1])
 void	child_process(char **av, char **env, int *pipefd)
 {
 	int	infile;

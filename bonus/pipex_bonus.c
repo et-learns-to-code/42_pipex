@@ -6,7 +6,7 @@
 /*   By: etien <etien@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 13:23:28 by etien             #+#    #+#             */
-/*   Updated: 2024/07/20 12:06:19 by etien            ###   ########.fr       */
+/*   Updated: 2024/07/20 14:02:36 by etien            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,9 +17,13 @@ void	here_doc(int ac, char *limiter);
 
 // cmd_index variable is used to mark the command to be created in
 // the child process.
-// The main function is different from the mandatory part by inclusion
-// of a while loop that will create a child process for each command in
-// the pipe chain.
+// The bonus part program is different from the mandatory part by inclusion
+// of a while loop that will create a child process for each command
+// (except the last one) in the pipe chain.
+// 1st if: checks for incorrect arguments
+// 2nd if: handles processing with here_doc
+//	   else: handles normal processing with an infile
+// After while loop, final command is executed.
 int	main(int ac, char **av, char **env)
 {
 	int	cmd_index;
@@ -50,6 +54,10 @@ int	main(int ac, char **av, char **env)
 	return (EXIT_SUCCESS);
 }
 
+// This function creates a pipe then forks the process.
+// The child process will execute the command and output to pipe write end.
+// The parent process will wait for the child to terminate
+// and read its input from the pipe read end.
 void	create_child_process(char *cmd, char **env)
 {
 	int		pipefd[2];
@@ -76,8 +84,12 @@ void	create_child_process(char *cmd, char **env)
 	}
 }
 
-// write here will keep appending to pipe until limiter string
-// is encountered
+// This function handles the processing for here_doc.
+// extract_line function will fetch the next line and the line will be
+// appended via write function to the pipe's write end until the limiter string
+// is encountered. Pipe and fork are used to accumulate all lines in the
+// here_doc in the child process first before passing it in one go to
+// the parent process.
 void	here_doc(int ac, char *limiter)
 {
 	int		pipefd[2];
@@ -105,7 +117,6 @@ void	here_doc(int ac, char *limiter)
 			free(line);
 		}
 		close(pipefd[1]);
-		exit(EXIT_SUCCESS);
 	}
 	else
 	{
