@@ -6,7 +6,7 @@
 /*   By: etien <etien@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 13:23:28 by etien             #+#    #+#             */
-/*   Updated: 2024/07/20 15:12:20 by etien            ###   ########.fr       */
+/*   Updated: 2024/07/20 16:21:30 by etien            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,8 @@ void	create_child_process(char *cmd, char **env);
 // The bonus part program is different from the mandatory part by inclusion
 // of a while loop that will create a child process for each command
 // (except the last one) in the pipe chain.
-// After while loop, final command is executed.
+// After the while loop, the final command is executed in the body of
+// the main program.
 int	main(int ac, char **av, char **env)
 {
 	int	cmd_index;
