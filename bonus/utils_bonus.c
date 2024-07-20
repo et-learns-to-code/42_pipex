@@ -6,21 +6,25 @@
 /*   By: etien <etien@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/17 15:48:09 by etien             #+#    #+#             */
-/*   Updated: 2024/07/19 10:50:00 by etien            ###   ########.fr       */
+/*   Updated: 2024/07/20 11:41:21 by etien            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/pipex_bonus.h"
 
+// This function prints a custom error message before exiting the
+// program with EXIT_FAILURE (code 1).
 void	err_and_exit(char *message)
 {
 	ft_putendl_fd(message, 2);
 	exit(EXIT_FAILURE);
 }
 
-// path and args don't have to be freed after execve is called
+// path doesn't have to be freed after execve is called
 // because the process image will be replaced by the new
-// program and previous memory will be deallocated by the system.
+// program.
+// This function formulates the arguments (path and args) to call the
+// execve funtion that will execute the command.
 void	exec_cmd(char *cmd, char **env)
 {
 	char	*path;
@@ -39,6 +43,10 @@ void	exec_cmd(char *cmd, char **env)
 
 // F_OK | X_OK is a bitwise operation that checks that the file both
 // exists and is executable.
+// This function will fix together the path to the command by
+// drawing from the $PATH environment variable, concatenating the command
+// and testing until a correct path is found.
+// String manipulation: {path} + {/} + {cmd}
 char	*fetch_path(char *cmd, char **env)
 {
 	int		i;
@@ -67,6 +75,8 @@ char	*fetch_path(char *cmd, char **env)
 	return (path);
 }
 
+// A helper function to free double arrays for proper memory management.
+// (e.g. paths and args)
 void	free_double_arr(char **arr)
 {
 	int	i;

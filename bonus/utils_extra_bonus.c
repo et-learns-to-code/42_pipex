@@ -6,21 +6,25 @@
 /*   By: etien <etien@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/17 15:48:09 by etien             #+#    #+#             */
-/*   Updated: 2024/07/20 10:56:14 by etien            ###   ########.fr       */
+/*   Updated: 2024/07/20 11:51:07 by etien            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/pipex_bonus.h"
 
+// This function prints an error message regarding correct usage
+// of arguments then exits the program.
 void	incorrect_args(void)
 {
 	err_and_exit("Correct usage: \n"
-		"1) ./pipex file1 cmd1 cmd2 cmd3 ... cmdn file2 \n"
-		"2) ./pipex here_doc LIMITER cmd cmd1 file");
+		"1) ./pipex_bonus file1 cmd1 cmd2 cmd3 ... cmdn file2 \n"
+		"2) ./pipex_bonus here_doc LIMITER cmd cmd1 file");
 }
 
-// >> in here_doc command means appending to text file
-// so O_APPEND is used for here_doc
+// >> in here_doc usage means appending to text file
+// so O_APPEND is used here
+// This function facilitates opening of files in different
+// opening modes with full permissions (octal 0777).
 int	open_file(char *file, int open_mode)
 {
 	int	fd;
@@ -37,10 +41,10 @@ int	open_file(char *file, int open_mode)
 	return (fd);
 }
 
-// this function will read input from stdin character by character
+// This function will read input from stdin character by character
 // into a buffer until a newline character is encountered,
-// then the line pointer will point to buffer to update
-// line in here_doc function
+// then the line pointer passed in as an argument will point to
+// buffer to update line in the here_doc function.
 int	extract_line(char **line)
 {
 	char	*buffer;
@@ -52,12 +56,14 @@ int	extract_line(char **line)
 	if (!buffer)
 		return (-1);
 	i = 0;
-	while (((bytes_read = read(0, &c, 1)) > 0))
+	bytes_read = read(0, &c, 1);
+	while (bytes_read > 0)
 	{
 		buffer[i] = c;
 		i++;
 		if (c == '\n')
-			break;
+			break ;
+		bytes_read = read(0, &c, 1);
 	}
 	*line = buffer;
 	return (bytes_read);

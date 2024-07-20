@@ -6,7 +6,7 @@
 /*   By: etien <etien@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 13:23:28 by etien             #+#    #+#             */
-/*   Updated: 2024/07/20 10:57:02 by etien            ###   ########.fr       */
+/*   Updated: 2024/07/20 12:06:19 by etien            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -141,7 +141,7 @@ you can create a helper function for this (esp. to free the 2D arrays).
 - remember to error check for read, write, fork and pipe
 
 // FOR BONUS
-- utils part identical except append used here for heredoc portion:
+- utils part identical except append used when opening files for heredoc portion:
 if (in_or_out == 2)
 		ret = open(file, O_WRONLY | O_CREAT | O_APPEND, 0777);
 
@@ -156,9 +156,9 @@ utils to do appending
 
 // NORMAL PROCESSING
 - dup2 to make fd_in replace stdin
-- only execute the last command in main body; the rest will be handled under
-do_pipe function
-- do_pipe function: execution will be delegated to child process - parent
-handle
-- always redirect before executing in child process
+
+- only execute the last command in main body; the rest will be handled
+under child processes
+
+- always redirect stdin and stdout before executing in child process
 */

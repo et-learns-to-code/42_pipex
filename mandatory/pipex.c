@@ -6,7 +6,7 @@
 /*   By: etien <etien@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 13:23:28 by etien             #+#    #+#             */
-/*   Updated: 2024/07/19 10:13:03 by etien            ###   ########.fr       */
+/*   Updated: 2024/07/20 12:06:32 by etien            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@ void	child_process(char **av, char **env, int *pipefd);
 
 // pid_t is a data type available under the <sys/types.h> library specifically
 // used to store process ids.
+// fork accepts an int arr[2]: 0 is the read end and 1 is the write end
 int	main(int ac, char **av, char **env)
 {
 	int		pipefd[2];
@@ -101,7 +102,7 @@ you can create a helper function for this (esp. to free the 2D arrays).
 - remember to error check for read, write, fork and pipe
 
 // FOR BONUS
-- utils part identical except append used here for heredoc portion:
+- utils part identical except append used when opening files for heredoc portion:
 if (in_or_out == 2)
 		ret = open(file, O_WRONLY | O_CREAT | O_APPEND, 0777);
 
@@ -116,9 +117,9 @@ utils to do appending
 
 // NORMAL PROCESSING
 - dup2 to make fd_in replace stdin
-- only execute the last command in main body; the rest will be handled under
-do_pipe function
-- do_pipe function: execution will be delegated to child process - parent
-handle
-- always redirect before executing in child process
+
+- only execute the last command in main body; the rest will be handled
+under child processes
+
+- always redirect stdin and stdout before executing in child process
 */
