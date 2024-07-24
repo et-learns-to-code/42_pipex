@@ -6,7 +6,7 @@
 /*   By: etien <etien@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 13:23:28 by etien             #+#    #+#             */
-/*   Updated: 2024/07/20 13:36:55 by etien            ###   ########.fr       */
+/*   Updated: 2024/07/24 10:29:29 by etien            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ void	parent_process(char **av, char **env, int *pipefd)
 	dup2(pipefd[0], STDIN_FILENO);
 	close(pipefd[0]);
 	dup2(outfile, STDOUT_FILENO);
-	close (outfile);
+	close(outfile);
 	exec_cmd(av[3], env);
 }
 
