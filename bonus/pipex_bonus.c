@@ -102,7 +102,7 @@ void	here_doc_input(int pipefd[2], char *limiter)
 	close(pipefd[0]);
 	while (extract_line(&line) > 0)
 	{
-		if (ft_strncmp(line, limiter, ft_strlen(limiter)) == 0)
+		if (ft_strncmp(line, limiter, ft_strlen(limiter)) == 0 && line[ft_strlen(limiter)] == '\n')
 			break ;
 		write(pipefd[1], line, ft_strlen(line));
 		free(line);
