@@ -6,7 +6,7 @@
 /*   By: etien <etien@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 13:23:28 by etien             #+#    #+#             */
-/*   Updated: 2024/07/20 17:24:10 by etien            ###   ########.fr       */
+/*   Updated: 2024/11/29 16:20:30 by etien            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,7 +102,8 @@ void	here_doc_input(int pipefd[2], char *limiter)
 	close(pipefd[0]);
 	while (extract_line(&line) > 0)
 	{
-		if (ft_strncmp(line, limiter, ft_strlen(limiter)) == 0 && line[ft_strlen(limiter)] == '\n')
+		if (ft_strncmp(line, limiter, ft_strlen(limiter)) == 0
+			&& line[ft_strlen(limiter)] == '\n')
 			break ;
 		write(pipefd[1], line, ft_strlen(line));
 		free(line);
